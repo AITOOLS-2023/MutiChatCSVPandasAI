@@ -16,17 +16,17 @@ os.environ["OPENAI_API_KEY"] = ""
 
 def chat_with_csv(df,prompt):
     llm = OpenAI(api_token=openai_api_key)
-    pandas_ai = SmartDataframe(df, config={"llm": llm})
-    #pandas_ai = PandasAI(llm, save_charts=True)
-    result = pandas_ai.chat(prompt)
-    #result = pandas_ai.run(df,prompt=prompt)
+    #pandas_ai = SmartDataframe(df, config={"llm": llm})
+    pandas_ai = PandasAI(llm,conversational=True)
+    #result = pandas_ai.chat(prompt)
+    result = pandas_ai.run(df,prompt=prompt,show_code=True)
     return result
 
 st.set_page_config(layout='wide')
-st.title("Multiple-CSV ChatApp powered by LLM")
+st.title("CSV ChatApp")
 st.markdown('<style>h1{color: orange; text-align: center;}</style>', unsafe_allow_html=True)
-st.subheader('Built for All Data Analysis and Visualizations')
-st.markdown('<style>h3{color: pink;  text-align: center;}</style>', unsafe_allow_html=True)
+#st.subheader('Built for All Data Analysis and Visualizations')
+#st.markdown('<style>h3{color: pink;  text-align: center;}</style>', unsafe_allow_html=True)
 
 # Upload multiple CSV files
 input_csvs = st.sidebar.file_uploader("Upload your CSV files", type=['csv'], accept_multiple_files=True)
@@ -50,8 +50,4 @@ if input_csvs:
         if st.button("Chat with csv"):
             st.info("Your Query: "+ input_text)
             result = chat_with_csv(data,input_text)
-            fig_number = plt.get_fignums()
-            if fig_number:
-                st.pyplot(plt.gcf())
-            else:
-                st.success(result)
+            st.success(result)
